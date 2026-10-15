@@ -1,0 +1,9 @@
+node_modules/
+client/dist/
+server/coverage/
+.env
+.env.*
+!.env.example
+client/.env
+server/.env
+npm-debug.log*
