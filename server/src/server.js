@@ -46,8 +46,13 @@ function describeMongoConnectionError(error) {
 }
 
 async function start() {
-  await mongoose.connect(process.env.MONGODB_URI)
-  const server = app.listen(port, () => console.log(`Restaurant API listening on port ${port}`))
+  console.log('Starting restaurant API...')
+  console.log('Connecting to MongoDB...')
+  await mongoose.connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 10000,
+  })
+  console.log('MongoDB connected successfully')
+  const server = app.listen(port, '0.0.0.0', () => console.log(`Restaurant API listening on port ${port}`))
   const shutdown = async () => {
     server.close(async () => {
       await mongoose.disconnect()
