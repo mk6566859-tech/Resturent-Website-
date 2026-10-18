@@ -22,6 +22,12 @@ app.use(cors({
 }))
 app.use(express.json({ limit: '20kb' }))
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: 'draft-8', legacyHeaders: false }))
+app.get('/', (_req, res) => res.json({
+  name: 'Restaurant API',
+  status: 'online',
+  health: '/api/health',
+  timestamp: new Date().toISOString()
+}))
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', database: require('mongoose').connection.readyState === 1 ? 'connected' : 'disconnected' }))
 app.use('/api/auth', authRoutes)
 app.use('/api/dishes', dishRoutes)
