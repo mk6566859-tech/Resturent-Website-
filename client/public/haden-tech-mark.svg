@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 768">
+  <defs>
+    <linearGradient id="rim" x1="72" y1="96" x2="690" y2="674" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0874DD"/>
+      <stop offset="1" stop-color="#0588F2"/>
+    </linearGradient>
+    <linearGradient id="bars" x1="270" y1="176" x2="505" y2="427" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#09A4F3"/>
+      <stop offset="1" stop-color="#0756C8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="384" cy="384" r="344" fill="#061D3B"/>
+  <circle cx="384" cy="384" r="344" stroke="url(#rim)" stroke-width="12"/>
+  <path d="M264 166h80v94h-80zM424 166h79v76h-79zM264 260h80v82h-80zM424 242h79v180h-79z" fill="url(#bars)"/>
+  <path d="M344 260h80v82h-80z" fill="#079FEA"/>
+  <path d="m264 332 80-80v18l-80 80zM267 421l171-171 13 13-171 171h-13z" fill="#F6F8FC"/>
+  <path d="m423 244 66-23-15 81-20-20-55 58a30 30 0 1 1-14-14l59-59-21-23Z" fill="#F6F8FC"/>
+  <path d="M344 362h80v60h-80z" fill="#F6F8FC"/>
+  <text x="384" y="512" fill="#F6F8FC" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="700" letter-spacing="-4" text-anchor="middle">HADEN TECH</text>
+  <text x="384" y="554" fill="#E8EFF9" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" letter-spacing="8" text-anchor="middle">THE TECHNOLOGY EDGE</text>
+</svg>

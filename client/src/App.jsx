@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, Route, Routes, useNavigate } from 'react-router-dom'
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import {
-  ArrowDown, ArrowRight, ArrowUpRight, Check, Clock3,
-  MapPin, Menu as MenuIcon, Minus, Plus, Search, ShoppingBag, X,
+  ArrowDown, ArrowRight, ArrowUpRight, Check, Clock3, Code2, Globe2,
+  MapPin, Menu as MenuIcon, MessageCircle, Minus, Monitor, Phone, Plus,
+  Search, ShoppingBag, Smartphone, X,
 } from 'lucide-react'
 import { restaurant } from './config/restaurant'
 import { categories as initialCategories, dishes as initialDishes } from './data/menu'
@@ -16,13 +17,21 @@ const currentTime = new Date().toTimeString().slice(0, 5)
 
 function Header({ cartCount, onCart, restaurantConfig }) {
   const [open, setOpen] = useState(false)
+  const navigate = useNavigate()
   const closeMenu = () => setOpen(false)
+  const navigateToSection = (event, href) => {
+    event.preventDefault()
+    closeMenu()
+    navigate(`/${href}`)
+    const targetId = href.slice(1)
+    document.getElementById(targetId)?.scrollIntoView({ behavior: 'instant', block: 'start' })
+  }
   return (
     <header className="site-header">
-      <a className="wordmark" href="#home" onClick={closeMenu} aria-label={`${restaurantConfig.name} home`}>
+      <Link className="wordmark" to="/" onClick={closeMenu} aria-label={`${restaurantConfig.name} home`}>
         {restaurantConfig.logo ? <img className="brand-logo" src={restaurantConfig.logo} alt="" /> : <span className="wordmark-mark">S</span>}
         <span>{restaurantConfig.name}<small>{restaurantConfig.locationLabel}</small></span>
-      </a>
+      </Link>
       <button className="icon-button mobile-menu-toggle" aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open} onClick={() => setOpen(!open)}>
         {open ? <X /> : <MenuIcon />}
       </button>
@@ -33,9 +42,10 @@ function Header({ cartCount, onCart, restaurantConfig }) {
           ['Gallery', '#gallery', restaurantConfig.sections?.gallery !== false],
           ['Visit us', '#visit', restaurantConfig.sections?.visit !== false],
         ].filter(([, , visible]) => visible).map(([label, href]) => (
-          <a href={href} key={label} onClick={closeMenu}>{label}</a>
+          <a href={`/${href}`} key={label} onClick={(event) => navigateToSection(event, href)}>{label}</a>
         ))}
-        {restaurantConfig.sections?.reservations !== false && <a className="nav-reserve" href="#reserve" onClick={closeMenu}>Reserve a table <ArrowUpRight size={14} /></a>}
+        <Link to="/developers" onClick={closeMenu}>Developers</Link>
+        {restaurantConfig.sections?.reservations !== false && <a className="nav-reserve" href="/#reserve" onClick={(event) => navigateToSection(event, '#reserve')}>Reserve a table <ArrowUpRight size={14} /></a>}
         <Link className="nav-admin" to="/admin" onClick={closeMenu}>Admin <ArrowUpRight size={14} /></Link>
       </nav>
       <button className="bag-button" onClick={onCart} aria-label={`Open bag, ${cartCount} items`}>
@@ -235,7 +245,92 @@ function ReservationForm({ onReserve }) {
 }
 
 function Footer({ restaurantConfig }) {
-  return <footer className="site-footer"><a className="wordmark footer-brand" href="#home">{restaurantConfig.logo ? <img className="brand-logo" src={restaurantConfig.logo} alt="" /> : <span className="wordmark-mark">S</span>}<span>{restaurantConfig.name}<small>{restaurantConfig.locationLabel}</small></span></a><p>Made with warmth in Lahore.</p><span>© {currentYear} {restaurantConfig.name}</span><a className="admin-link" href="/admin">Admin</a></footer>
+  return <footer className="site-footer"><Link className="wordmark footer-brand" to="/">{restaurantConfig.logo ? <img className="brand-logo" src={restaurantConfig.logo} alt="" /> : <span className="wordmark-mark">S</span>}<span>{restaurantConfig.name}<small>{restaurantConfig.locationLabel}</small></span></Link><p>Made with warmth in Lahore.</p><span>© {currentYear} {restaurantConfig.name}</span><Link className="developer-credit" to="/developers">Website by <img src="/haden-tech-mark.svg" alt="Haden Tech logo" /><strong>Haden Tech</strong></Link><Link className="admin-link" to="/admin">Admin</Link></footer>
+}
+
+function DevelopersPage() {
+  const services = [
+    { icon: <Monitor />, title: 'Web Development', text: 'Modern, responsive websites made for your business.' },
+    { icon: <Globe2 />, title: 'Web Applications', text: 'Useful digital tools that help teams work smarter.' },
+    { icon: <Smartphone />, title: 'Mobile Applications', text: 'Mobile experiences designed around your customers.' },
+    { icon: <ShoppingBag />, title: 'E-commerce Solutions', text: 'Online stores that make it easy to browse and buy.' },
+  ]
+  const socialLinks = [
+    { mark: 'in', label: 'LinkedIn', href: 'https://www.linkedin.com/in/malik-kashan-b7714439b?utm_source=share_via&utm_content=profile&utm_medium=member_android' },
+    { mark: 'f', label: 'Facebook', href: 'https://www.facebook.com/share/1QyDqjDga3/' },
+    { mark: 'ig', label: 'Instagram · @hadentech1', href: 'https://www.instagram.com/hadentech1/' },
+  ]
+
+  return <main className="developers-page">
+    <section className="developers-hero">
+      <div className="developers-hero-copy">
+        <div className="developers-brand"><img src="/haden-tech-mark.svg" alt="Haden Tech logo" /><h1>Haden <span>Tech</span></h1></div>
+        <p className="eyebrow">THE TECHNOLOGY EDGE</p>
+        <p className="developers-tagline">Building modern digital solutions for today’s businesses.</p>
+        <a className="button button-copper" href="#developer-contact">Let’s talk <ArrowUpRight size={16} /></a>
+      </div>
+      <div className="developers-code-card" aria-hidden="true">
+        <span className="developers-code-mark">H<span>.</span></span>
+        <Code2 size={30} />
+        <p>Your idea.<br />Our code.<br /><strong>Real results.</strong></p>
+        <div className="developers-code-line" />
+      </div>
+    </section>
+    <section className="developers-services">
+      <div className="developers-section-heading">
+        <p className="eyebrow">WHAT WE DO</p>
+        <h2>Digital solutions,<br />built around you.</h2>
+      </div>
+      <div className="developers-service-grid">
+        {services.map(({ icon, title, text }) => <article className="developers-service" key={title}>
+          <span className="developers-service-icon">{icon}</span>
+          <h3>{title}</h3>
+          <p>{text}</p>
+        </article>)}
+      </div>
+    </section>
+    <section className="developers-contact" id="developer-contact">
+      <div>
+        <p className="eyebrow">HAVE A PROJECT IN MIND?</p>
+        <h2>Let’s build something great.</h2>
+        <p>Get in touch with Haden Tech to talk about your next digital project.</p>
+        <a className="developers-phone" href="tel:+923421039774"><Phone size={17} /> +92 342 103 9774</a>
+        <a className="button button-copper developers-whatsapp" href="https://wa.me/923421039774" target="_blank" rel="noreferrer">
+          <MessageCircle size={16} /> Chat on WhatsApp <ArrowUpRight size={15} />
+        </a>
+      </div>
+      <div className="developers-socials" aria-label="Haden Tech social media">
+        {socialLinks.map(({ mark, label, href }) => <a href={href} key={label} target="_blank" rel="noreferrer">
+          <span className="developer-social-mark" aria-hidden="true">{mark}</span><span>{label}</span><ArrowUpRight size={14} />
+        </a>)}
+      </div>
+    </section>
+  </main>
+}
+
+function DeveloperChatButton() {
+  return <a className="developers-floating-contact" href="https://wa.me/923421039774" target="_blank" rel="noreferrer">
+    <MessageCircle size={19} aria-hidden="true" />
+    <span>Chat with developer</span>
+  </a>
+}
+
+function CartToast({ toast }) {
+  if (!toast) return null
+  return <div className="cart-toast" role="status" aria-live="polite" key={toast.id}>
+    <Check className="cart-toast-check" size={18} aria-hidden="true" />
+    <span className="cart-toast-message">{toast.message}</span>
+  </div>
+}
+
+function CartOrderButton({ cart, restaurantConfig }) {
+  const items = Object.values(cart)
+  if (!items.length) return null
+  return <a className="cart-order-button" href={createWhatsAppUrl(restaurantConfig.whatsapp, items)} target="_blank" rel="noreferrer">
+    <ShoppingBag size={18} aria-hidden="true" />
+    <span>Order on WhatsApp</span>
+    <b>{items.reduce((count, item) => count + item.quantity, 0)}</b>
+  </a>
 }
 
 function CartDrawer({ cart, onClose, onQuantity, restaurantConfig }) {
@@ -729,13 +824,24 @@ function AdminPage({ dishes, setDishes, categories, setCategories, restaurantCon
 }
 
 export default function App() {
+  const location = useLocation()
   const [dishes, setDishes] = useState(initialDishes)
   const [categories, setCategories] = useState(initialCategories)
   const [restaurantConfig, setRestaurantConfig] = useState(restaurant)
   const [cart, setCart] = useState({})
   const [cartOpen, setCartOpen] = useState(false)
+  const [cartToast, setCartToast] = useState(null)
   const [apiNotice, setApiNotice] = useState('')
   const cartCount = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0)
+  useEffect(() => {
+    if (!cartToast) return
+    const timeout = window.setTimeout(() => setCartToast(null), 2800)
+    return () => window.clearTimeout(timeout)
+  }, [cartToast])
+  useEffect(() => {
+    const targetId = location.hash.slice(1)
+    if (targetId) document.getElementById(targetId)?.scrollIntoView({ behavior: 'instant', block: 'start' })
+  }, [location.key, location.pathname, location.hash])
   useEffect(() => {
     if (!apiConfigured) return
     Promise.all([request('/dishes'), request('/categories'), request('/settings')]).then(([remoteDishes, remoteCategories, remoteSettings]) => {
@@ -762,7 +868,10 @@ export default function App() {
     const description = document.querySelector('meta[name="description"]')
     if (description) description.content = `${restaurantConfig.name}: ${restaurantConfig.hero.description}`
   }, [restaurantConfig])
-  const addToCart = (dish) => setCart((current) => ({ ...current, [dish.id]: { ...dish, quantity: (current[dish.id]?.quantity || 0) + 1 } }))
+  const addToCart = (dish) => {
+    setCart((current) => ({ ...current, [dish.id]: { ...dish, quantity: (current[dish.id]?.quantity || 0) + 1 } }))
+    setCartToast((current) => ({ id: (current?.id || 0) + 1, message: `Added ${dish.name} to your bag` }))
+  }
   const updateQuantity = (id, amount) => setCart((current) => {
     const quantity = (current[id]?.quantity || 0) + amount
     if (quantity <= 0) { const next = { ...current }; delete next[id]; return next }
@@ -774,6 +883,7 @@ export default function App() {
   }
   return <Routes>
     <Route path="/admin" element={<AdminPage dishes={dishes} setDishes={setDishes} categories={categories} setCategories={setCategories} restaurantConfig={restaurantConfig} onSettingsChange={setRestaurantConfig} />} />
-    <Route path="*" element={<><Header cartCount={cartCount} onCart={() => setCartOpen(true)} restaurantConfig={restaurantConfig} />{apiNotice && <div className="api-notice" role="status">{apiNotice}</div>}<HomePage dishes={dishes} categories={categories} onAdd={addToCart} onReserve={reserve} restaurantConfig={restaurantConfig} /><Footer restaurantConfig={restaurantConfig} />{cartOpen && <CartDrawer cart={cart} onClose={() => setCartOpen(false)} onQuantity={updateQuantity} restaurantConfig={restaurantConfig} />}</>} />
+    <Route path="/developers" element={<><Header cartCount={cartCount} onCart={() => setCartOpen(true)} restaurantConfig={restaurantConfig} /><DevelopersPage /><Footer restaurantConfig={restaurantConfig} /><CartOrderButton cart={cart} restaurantConfig={restaurantConfig} /><DeveloperChatButton /><CartToast toast={cartToast} />{cartOpen && <CartDrawer cart={cart} onClose={() => setCartOpen(false)} onQuantity={updateQuantity} restaurantConfig={restaurantConfig} />}</>} />
+    <Route path="*" element={<><Header cartCount={cartCount} onCart={() => setCartOpen(true)} restaurantConfig={restaurantConfig} />{apiNotice && <div className="api-notice" role="status">{apiNotice}</div>}<HomePage dishes={dishes} categories={categories} onAdd={addToCart} onReserve={reserve} restaurantConfig={restaurantConfig} /><Footer restaurantConfig={restaurantConfig} /><CartOrderButton cart={cart} restaurantConfig={restaurantConfig} /><DeveloperChatButton /><CartToast toast={cartToast} />{cartOpen && <CartDrawer cart={cart} onClose={() => setCartOpen(false)} onQuantity={updateQuantity} restaurantConfig={restaurantConfig} />}</>} />
   </Routes>
 }
