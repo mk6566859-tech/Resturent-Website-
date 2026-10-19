@@ -29,7 +29,7 @@ if (process.env.ADMIN_PASSWORD_HASH && !/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.t
   console.error('⚠️ ADMIN_PASSWORD_HASH must be a valid bcrypt hash.')
 }
 
-const port = Number(process.env.PORT || 3000)
+const port = Number(process.env.PORT || 5000)
 
 function describeMongoConnectionError(error) {
   const message = typeof error?.message === 'string' ? error.message : ''
